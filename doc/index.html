@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Brick : Test Suite</title>
+<link rel="stylesheet" href="css/web.css" type="text/css"/
+media="screen">
+<link rel="stylesheet" href="css/web.css" type="text/css"/
+media="print">
+<link rel="stylesheet" href="css/print.css" type="text/css"/ media="print">
+</head>
+
+<body>
+<table class = "main" align="center" cellspacing="50px"><tr>
+<td width="800px" align="justify">
+
+
+
+
+
+
+<center>
+<h1>Brick Test Suite</h1>
+<h3>Complete List of Tests</h3>
+</center>
+
+<!--
+<div class="noprint">
+<h3></h3>
+<p></p>
+</div>
+
+<div class="noscreen">
+<h3></h3>
+<p></p>
+</div>
+-->
+<h3>Input Files</h3>
+<ul>
+  <li>There are many input files used.</li>
+</ul>
+<h3>Tests</h3>
+<h4>Downsampling Rate Conversion</h4>
+<ul>
+  <li>640 : 147 &mdash; 192kHz to 44.1kHz</li>
+  <li>320 : 147 &mdash; 96kHz to 44.1kHz</li>
+  <li>160 : 147 &mdash; 48kHz to 44.1kHz</li>
+  <li>128 : 1 &mdash; 7 octaves down</li>
+  <li>64 : 1 &mdash; 6 octaves down</li>
+  <li>32 : 1 &mdash; 5 octaves down</li>
+  <li>16 : 1 &mdash; 4 octaves down</li>
+  <li>8 : 1 &mdash; 3 octaves down</li>
+  <li>4 : 1 &mdash; 192kHz to 48kHz, 176.4kHz to 44.1kHz, 2 octaves down, etc.</li>
+  <li>2 : 1 &mdash; 96kHz 44kHz, 88.2 kHz to 44.1kHz, 1 octave down, etc.</li>
+</ul>
+<h4>Upsampling Rate Conversion</h4>
+<ul>
+  <li>147 : 640 &mdash; 44.1kHz to 192kHz</li>
+  <li>147 : 320 &mdash; 44.1kHz to 96kHz</li>
+  <li>147 : 160 &mdash; 44.1kHz to 48kHz</li>
+  <li>1 : 128 &mdash; 7 octaves up</li>
+  <li>1 : 64 &mdash; 6 octaves up</li>
+  <li>1 : 32 &mdash; 5 octaves up</li>
+  <li>1 : 16 &mdash; 4 octaves up</li>
+  <li>1 : 8 &mdash; 3 octaves up</li>
+  <li>1 : 4 &mdash; 48kHz to 192kHz, 44.1kHz to 176.4kHz, 2 octaves up, etc.</li>
+  <li>1 : 2 &mdash; 48kHz to 96kHz, 44.1kHz to 88.2kHz, 1 octave up, etc.</li>
+</ul>
+<h4>Spectrogram</h4>
+<ul>
+  <li>DC Test</li>
+  <li>-100dB accuracy test</li>
+  <li>-6dB accuracy test</li>
+</ul>
+<h4>Dithering</h4>
+<ul>
+  <li>Dither Type Test</li>
+  <li>Dither Bits Test</li>
+</ul>
+<h4>Input Precision</h4>
+<ul>
+  <li>Arbitrary-precision oscillator, via Mathematica</li>
+  <li>Double-precision sin() function in the C++ \<cmath\> library</li>
+  <li>Chebyshev recursion formula implemented in double-precision</li>
+  <li>Wavetable methods</li>
+</ul>
+<h4>Input-Output Transparency</h4>
+<ul>
+  <li>int16 to int32 and back</li>
+  <li>int16 to float32 and back</li>
+</ul>
+<h4>General</h4>
+<ul>
+  <li>Command-Line Parser</li>
+  <li>File Protection</li>
+</ul>
+
+
+</td></tr></table>
+</html>

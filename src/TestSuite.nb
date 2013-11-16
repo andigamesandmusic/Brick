@@ -1,0 +1,475 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 7.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[     19162,        466]
+NotebookOptionsPosition[     18307,        436]
+NotebookOutlinePosition[     18668,        452]
+CellTagsIndexPosition[     18625,        449]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[TextData[{
+ "Since Brick is working at the highest resolutions possible given the \
+numerical accuracy restrictions of 64-bit floating points (with 53 bits \
+precision), it is crucial to use a test suite that is sensitive enough to \
+determine that it is functioning as intended. The test suite consists of \
+several sweeps, tones, and an impulse. These are generated using ",
+ StyleBox["Mathematica.",
+  FontSlant->"Italic"],
+ " The requirement that each sample contain the closest 64-bit floating point \
+number to the desired function means that precision higher than 64-bit must \
+be used. ",
+ StyleBox["Mathematica ",
+  FontSlant->"Italic"],
+ "is able to export raw 64-bit floats and can do so with the required \
+precision, however it takes a very long time because at the heart of the \
+oscillator is a Sin function which must be evaluated with very high \
+arguments.\n\nThe test suite must be first run on the original files to make \
+sure that Brick's spectrogram analysis is valid. The default spectrogram in \
+Brick is a gray-gradient with black meaning 0 dB and white meaning 255 dB, \
+using a Kaiser-35 window (approximately 300dB range). The FFT size used is \
+4096 (which can be changed).\n\nThe types of tests are:\nSweep test -- to \
+determine how Brick"
+}], "Text",
+ CellChangeTimes->{{3.50020815803034*^9, 3.500208413230618*^9}, {
+  3.500208512113276*^9, 3.5002085341472054`*^9}, {3.500208572876771*^9, 
+  3.500208700446011*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SRate", "=", "96000"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Nyq", "=", 
+   RowBox[{"SRate", "/", "2"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Oscillator", "[", 
+    RowBox[{"Amp_", ",", "Freq_", ",", "i_"}], "]"}], ":=", 
+   RowBox[{"Amp", "*", 
+    RowBox[{"Sin", "[", 
+     RowBox[{
+      RowBox[{"Integrate", "[", 
+       RowBox[{"Freq", ",", "i"}], "]"}], 
+      FractionBox[
+       RowBox[{"2", "\[Pi]"}], "SRate"]}], "]"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ExportFloat64", "[", 
+   RowBox[{"Filename_", ",", "Duration_", ",", "i_", ",", "f_"}], "]"}], ":=", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"g", "=", 
+     RowBox[{"Function", "[", 
+      RowBox[{"i", ",", "f"}], "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Export", "[", 
+     RowBox[{"Filename", ",", 
+      RowBox[{"Table", "[", 
+       RowBox[{
+        RowBox[{"g", "[", "iter", "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"iter", ",", "0", ",", 
+          RowBox[{"Duration", "*", "SRate"}], ",", "1"}], "}"}]}], "]"}], 
+      ",", "\"\<Real64\>\""}], "]"}]}], ")"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Sweep", "[", 
+    RowBox[{"Filename_", ",", "Duration_"}], "]"}], ":=", 
+   RowBox[{"ExportFloat64", "[", 
+    RowBox[{"Filename", ",", "Duration", ",", "i", ",", 
+     RowBox[{"Oscillator", "[", 
+      RowBox[{
+       FractionBox["1", "2"], ",", 
+       RowBox[{"Nyq", "*", 
+        FractionBox["i", 
+         RowBox[{"SRate", "*", "Duration"}]]}], ",", "i"}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Tone", "[", 
+    RowBox[{"Filename_", ",", "Duration_", ",", "Freq_"}], "]"}], ":=", 
+   RowBox[{"ExportFloat64", "[", 
+    RowBox[{"Filename", ",", "Duration", ",", "i", ",", 
+     RowBox[{"Oscillator", "[", 
+      RowBox[{
+       FractionBox["1", "2"], ",", "Freq", ",", "i"}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"VolumeTone", "[", 
+     RowBox[{"Filename_", ",", "Duration_", ",", "Freq_", ",", "AmpdB_"}], 
+     "]"}], ":=", 
+    RowBox[{"ExportFloat64", "[", 
+     RowBox[{"Filename", ",", "Duration", ",", "i", ",", 
+      RowBox[{"Oscillator", "[", 
+       RowBox[{
+        RowBox[{"10", "^", 
+         FractionBox["AmpdB", 
+          RowBox[{"-", "20"}]]}], ",", "Freq", ",", "i"}], "]"}]}], "]"}]}], 
+   ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"DCTone", "[", 
+     RowBox[{"Filename_", ",", "Duration_", ",", "AmpdB_"}], "]"}], ":=", 
+    RowBox[{"ExportFloat64", "[", 
+     RowBox[{"Filename", ",", "Duration", ",", "i", ",", 
+      RowBox[{"10", "^", 
+       FractionBox["AmpdB", 
+        RowBox[{"-", "20"}]]}]}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.500075351358032*^9, 3.500075369109057*^9}, {
+   3.5000755136028347`*^9, 3.5000755178248672`*^9}, {3.50007624165456*^9, 
+   3.500076271284953*^9}, {3.500076417545548*^9, 3.5000764371626387`*^9}, {
+   3.500076469234305*^9, 3.5000765586973457`*^9}, {3.500076648453326*^9, 
+   3.500076650660261*^9}, {3.500076743179723*^9, 3.500076744313657*^9}, {
+   3.5000768420815287`*^9, 3.500076845062871*^9}, {3.5000769394413977`*^9, 
+   3.500076946395933*^9}, {3.500077244579649*^9, 3.500077315784913*^9}, {
+   3.500077916103612*^9, 3.500077985012005*^9}, {3.500078328891346*^9, 
+   3.500078340146904*^9}, {3.500132542833836*^9, 3.500132547202071*^9}, {
+   3.500145438327732*^9, 3.500145518908537*^9}, {3.500145626986967*^9, 
+   3.5001456271861763`*^9}, {3.5001457989283657`*^9, 3.500145803078862*^9}, {
+   3.500145927188499*^9, 3.500145992774437*^9}, {3.5001460299913588`*^9, 
+   3.500146037576146*^9}, {3.500146157270092*^9, 3.500146163675346*^9}, {
+   3.500151041938423*^9, 3.500151093806691*^9}, {3.5001512909675293`*^9, 
+   3.500151323611891*^9}, {3.500151364851989*^9, 3.500151428200821*^9}, {
+   3.500151506785206*^9, 3.500151553549088*^9}, {3.500151696137261*^9, 
+   3.500151744703875*^9}, {3.500151805092063*^9, 3.5001519349191523`*^9}, {
+   3.500151999324086*^9, 3.50015203653751*^9}, {3.50015213894042*^9, 
+   3.50015216897263*^9}, {3.500152273821156*^9, 3.50015229160211*^9}, {
+   3.500152321752247*^9, 3.500152474631983*^9}, {3.500152511239503*^9, 
+   3.500152524339951*^9}, {3.500152613770743*^9, 3.50015263517695*^9}, {
+   3.500152681657825*^9, 3.500152688034371*^9}, {3.50015281014286*^9, 
+   3.5001528131959753`*^9}, {3.500152864997942*^9, 3.5001528655154467`*^9}, {
+   3.500152901780219*^9, 3.5001529118410187`*^9}, {3.5001529531137667`*^9, 
+   3.500152998879456*^9}, {3.500153037193026*^9, 3.5001530901523123`*^9}, {
+   3.500153992365375*^9, 3.500154137760427*^9}, {3.500154239615185*^9, 
+   3.5001542422786837`*^9}, {3.5001542741456013`*^9, 3.500154294304968*^9}, {
+   3.5001543407321453`*^9, 3.5001543419051237`*^9}, {3.500155223002727*^9, 
+   3.500155225270166*^9}, {3.500155272368867*^9, 3.500155306073649*^9}, {
+   3.500155380858844*^9, 3.500155499271308*^9}, {3.500155556052746*^9, 
+   3.50015555948507*^9}, 3.500163104645763*^9, {3.500163305165354*^9, 
+   3.5001633627095613`*^9}, {3.500165692115394*^9, 3.500165869651623*^9}, {
+   3.500165907123104*^9, 3.500165934610015*^9}, {3.500165982281269*^9, 
+   3.500165985410885*^9}, {3.500166054001457*^9, 3.500166109991959*^9}, {
+   3.500166184309926*^9, 3.500166187045362*^9}, {3.500166237539441*^9, 
+   3.5001662549784393`*^9}, {3.500208772666769*^9, 3.5002087733605337`*^9}, {
+   3.500211204818171*^9, 3.5002112481518097`*^9}, {3.500218064608653*^9, 
+   3.5002180898761597`*^9}, {3.501945095746269*^9, 3.5019450971717787`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Sweep", "[", 
+   RowBox[{"\"\</generated/mathematica/sweep10sec.raw\>\"", ",", "10"}], 
+   "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Sweep", "[", 
+   RowBox[{"\"\</generated/mathematica/sweep20sec.raw\>\"", ",", "20"}], 
+   "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Sweep", "[", 
+   RowBox[{"\"\</generated/mathematica/sweep40sec.raw\>\"", ",", "40"}], 
+   "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Sweep", "[", 
+   RowBox[{"\"\</generated/mathematica/sweep80sec.raw\>\"", ",", "80"}], 
+   "]"}], ";"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.500077020155325*^9, 3.5000770842512283`*^9}, {
+   3.500077285143569*^9, 3.500077287365876*^9}, {3.500077952451414*^9, 
+   3.500077956042478*^9}, {3.500078319395252*^9, 3.500078320936193*^9}, {
+   3.500132520107579*^9, 3.5001325202586403`*^9}, {3.500145811898559*^9, 
+   3.5001458120742826`*^9}, {3.500163375968836*^9, 3.5001634613570337`*^9}, 
+   3.500165468986907*^9}],
+
+Cell[TextData[{
+ "It is ",
+ StyleBox["very",
+  FontWeight->"Bold"],
+ " ",
+ StyleBox["important",
+  FontWeight->"Bold"],
+ " to not use decimal numbers anywhere, otherwise this triggers machine \
+precision mode and you will get wacky harmonics due to the instability of the \
+machine trig functions."
+}], "Text",
+ CellChangeTimes->{{3.500167185625828*^9, 3.500167238874137*^9}, {
+  3.5001672887050257`*^9, 3.5001672900900497`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Sweep", "[", 
+   RowBox[{
+   "\"\</generated/mathematica/_Sweep80s_Machine.raw\>\"", ",", "80."}], 
+   "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.501943425640167*^9, 3.501943493971004*^9}}],
+
+Cell["\<\
+For a straight up C implementation, the following formula can be used:\
+\>", "Text",
+ CellChangeTimes->{{3.500167185625828*^9, 3.500167238874137*^9}, {
+  3.5001672887050257`*^9, 3.5001672900900497`*^9}, {3.5019451659395*^9, 
+  3.501945183880952*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"1", "/", "2"}], "*", 
+    RowBox[{"Sin", "[", 
+     RowBox[{
+      RowBox[{"Integrate", "[", 
+       RowBox[{
+        RowBox[{"Nyq", "*", 
+         FractionBox["i", 
+          RowBox[{"SRate", "*", "80"}]]}], ",", "i"}], "]"}], 
+      FractionBox[
+       RowBox[{"2", "\[Pi]"}], "SRate"]}], "]"}]}], ",", "20"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.5019450855193977`*^9, 3.5019451145039053`*^9}, {
+  3.5019451510386753`*^9, 3.5019451511161747`*^9}, {3.501945194413128*^9, 
+  3.5019452086507187`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"0.5`20.", " ", 
+  RowBox[{"Sin", "[", 
+   RowBox[{
+   "2.045307717180854972957450119322593023565865494384836`20.*^-7", " ", 
+    SuperscriptBox["i", "2"]}], "]"}]}]], "Output",
+ CellChangeTimes->{
+  3.5019451263074217`*^9, {3.501945188031374*^9, 3.501945213336935*^9}}]
+}, Open  ]],
+
+Cell[TextData[{
+ "i.e.: ",
+ Cell[BoxData[
+  RowBox[{
+   RowBox[{"double", " ", "v"}], " ", "=", " ", 
+   RowBox[{"0.5", "*", "sin", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"2.0453077171808549730", "e"}], "-", 
+      RowBox[{"07", " ", "*", "i", "*", "i"}]}], ")"}]}]}]],
+  CellChangeTimes->{
+   3.5019451263074217`*^9, {3.501945188031374*^9, 3.501945213336935*^9}}],
+ ";"
+}], "Text",
+ CellChangeTimes->{{3.500167185625828*^9, 3.500167238874137*^9}, {
+  3.5001672887050257`*^9, 3.5001672900900497`*^9}, {3.5019451659395*^9, 
+  3.501945183880952*^9}, {3.501945242265226*^9, 3.501945306621798*^9}, {
+  3.5019454518944683`*^9, 3.501945458502363*^9}}],
+
+Cell[BoxData[
+ RowBox[{"(", 
+  RowBox[{
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone_level_7.raw\>\"", ",", "20", ",", 
+     RowBox[{"22050", "-", 
+      FractionBox["1", "1000"]}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone_level_6.raw\>\"", ",", "20", ",", 
+     RowBox[{"22050", "-", 
+      FractionBox["1", "100"]}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone_level_5.raw\>\"", ",", "20", ",", 
+     RowBox[{"22050", "-", 
+      FractionBox["1", "10"]}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone_level_4.raw\>\"", ",", "20", ",", 
+     RowBox[{"22050", "-", "1"}]}], "]"}], ";", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone_level_3.raw\>\"", ",", "20", ",", 
+     RowBox[{"22050", "-", "10"}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone_level_2.raw\>\"", ",", "20", ",", 
+     RowBox[{"22050", "-", "100"}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone_level_1.raw\>\"", ",", "20", ",", 
+     RowBox[{"22050", "-", "1000"}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{
+    "\"\</generated/mathematica/toneNyq-10k.raw\>\"", ",", "20", ",", 
+     RowBox[{"Nyq", "-", "10000"}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/toneNyq-1k.raw\>\"", ",", "20", ",", 
+     RowBox[{"Nyq", "-", "1000"}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{
+    "\"\</generated/mathematica/toneNyq-100.raw\>\"", ",", "20", ",", 
+     RowBox[{"Nyq", "-", "100"}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/toneNyq-10.raw\>\"", ",", "20", ",", 
+     RowBox[{"Nyq", "-", "10"}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/toneNyq-1.raw\>\"", ",", "20", ",", 
+     RowBox[{"Nyq", "-", "1"}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{
+    "\"\</generated/mathematica/toneNyq-0.1.raw\>\"", ",", "20", ",", 
+     RowBox[{"Nyq", "-", 
+      FractionBox["1", "10"]}]}], "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{
+    "\"\</generated/mathematica/tone10k.raw\>\"", ",", "20", ",", "10000"}], 
+    "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{
+    "\"\</generated/mathematica/tone1k.raw\>\"", ",", "20", ",", "1000"}], 
+    "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{
+    "\"\</generated/mathematica/tone100.raw\>\"", ",", "20", ",", "100"}], 
+    "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{
+    "\"\</generated/mathematica/tone10.raw\>\"", ",", "20", ",", "10"}], 
+    "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone1.raw\>\"", ",", "20", ",", "1"}],
+     "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"Tone", "[", 
+    RowBox[{"\"\</generated/mathematica/tone0.1.raw\>\"", ",", "20", ",", 
+     FractionBox["1", "10"]}], "]"}], ";"}], ")"}]], "Input",
+ CellChangeTimes->{{3.500166265514139*^9, 3.500166324424584*^9}, {
+  3.500167159761271*^9, 3.500167182814617*^9}, {3.500167331286112*^9, 
+  3.500167344178808*^9}}],
+
+Cell["\<\
+We need to use exact dB, and we need the frequency to fall precisely on one \
+of the FFT bins.\
+\>", "Text",
+ CellChangeTimes->{{3.500216114093583*^9, 3.500216145451796*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"VolumeTone", "[", 
+   RowBox[{
+   "\"\</generated/mathematica/tone12k-100.6dB.raw\>\"", ",", "20", ",", 
+    RowBox[{"Nyq", "/", "4"}], ",", 
+    RowBox[{"100", "+", 
+     FractionBox["6", "10"]}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"VolumeTone", "[", 
+   RowBox[{
+   "\"\</generated/mathematica/tone12k-100.4dB.raw\>\"", ",", "20", ",", 
+    RowBox[{"Nyq", "/", "4"}], ",", 
+    RowBox[{"100", "+", 
+     FractionBox["4", "10"]}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"VolumeTone", "[", 
+   RowBox[{
+   "\"\</generated/mathematica/tone12k-100.1dB.raw\>\"", ",", "20", ",", 
+    RowBox[{"Nyq", "/", "4"}], ",", 
+    RowBox[{"100", "+", 
+     FractionBox["1", "10"]}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"VolumeTone", "[", 
+   RowBox[{"\"\</generated/mathematica/tone12k-100dB.raw\>\"", ",", "20", ",", 
+    RowBox[{"Nyq", "/", "4"}], ",", "100"}], "]"}], ";", 
+  RowBox[{"VolumeTone", "[", 
+   RowBox[{
+   "\"\</generated/mathematica/tone12k-99.9dB.raw\>\"", ",", "20", ",", 
+    RowBox[{"Nyq", "/", "4"}], ",", 
+    RowBox[{"99", "+", 
+     FractionBox["9", "10"]}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"VolumeTone", "[", 
+   RowBox[{
+   "\"\</generated/mathematica/tone12k-99.6dB.raw\>\"", ",", "20", ",", 
+    RowBox[{"Nyq", "/", "4"}], ",", 
+    RowBox[{"99", "+", 
+     FractionBox["6", "10"]}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"VolumeTone", "[", 
+   RowBox[{
+   "\"\</generated/mathematica/tone12k-99.4dB.raw\>\"", ",", "20", ",", 
+    RowBox[{"Nyq", "/", "4"}], ",", 
+    RowBox[{"99", "+", 
+     FractionBox["4", "10"]}]}], "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.500211271517899*^9, 3.500211302539447*^9}, {
+  3.5002129798051643`*^9, 3.5002130699595823`*^9}, {3.500215984152556*^9, 
+  3.500216091480949*^9}, {3.50021616747993*^9, 3.500216168492337*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"DCTone", "[", 
+    RowBox[{
+    "\"\</generated/mathematica/dctone100dB_actual94dB.raw\>\"", ",", "20", 
+     ",", "100"}], "]"}], ";"}], "\[IndentingNewLine]"}]], "Input",
+ CellChangeTimes->{{3.500218116411998*^9, 3.500218140557282*^9}, {
+  3.500228521278891*^9, 3.500228537867124*^9}, {3.5002293473829737`*^9, 
+  3.5002293726068697`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"VolumeTone", "[", 
+   RowBox[{"\"\</generated/mathematica/neardctone.raw\>\"", ",", "5", ",", 
+    RowBox[{"SRate", "/", "1024"}], ",", "100"}], "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.50022853928642*^9, 3.50022859364391*^9}, {
+  3.500228731571561*^9, 3.500228734434937*^9}, {3.500228863036181*^9, 
+  3.500228870517872*^9}}],
+
+Cell["\<\
+Regarding DC and Nyquist: because the spectrogram folds the negative \
+frequencies onto the postive frequencies, the reported DC and Nyquist energy \
+will be twice as high. It is not possible to simply divide by 2 at \[Omega]=0 \
+and \[Pi] to 'normalize the spectrum' because energy very near to DC leaks \
+over between the positive and negative frequency domain. Dividing by 2 would \
+introduce a discontinuity in the leakage. Therefore the DC tone test should \
+report 94 dB instead of 100 dB.\
+\>", "Text",
+ CellChangeTimes->{{3.500229063664969*^9, 3.5002293372370567`*^9}, {
+  3.500229479821327*^9, 3.5002294937321672`*^9}, {3.500229549516077*^9, 
+  3.5002295510265427`*^9}}]
+},
+WindowSize->{789, 644},
+WindowMargins->{{46, Automatic}, {Automatic, 43}},
+ShowSelection->True,
+FrontEndVersion->"7.0 for Mac OS X x86 (32-bit) (February 18, 2009)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[545, 20, 1453, 25, 206, "Text"],
+Cell[2001, 47, 5700, 120, 348, "Input"],
+Cell[7704, 169, 1016, 22, 88, "Input"],
+Cell[8723, 193, 429, 12, 41, "Text"],
+Cell[9155, 207, 227, 6, 27, "Input"],
+Cell[9385, 215, 260, 5, 26, "Text"],
+Cell[CellGroupData[{
+Cell[9670, 224, 576, 17, 48, "Input"],
+Cell[10249, 243, 293, 7, 33, "Output"]
+}, Open  ]],
+Cell[10557, 253, 653, 17, 26, "Text"],
+Cell[11213, 272, 3520, 73, 405, "Input"],
+Cell[14736, 347, 184, 4, 26, "Text"],
+Cell[14923, 353, 1930, 48, 247, "Input"],
+Cell[16856, 403, 387, 9, 43, "Input"],
+Cell[17246, 414, 365, 7, 27, "Input"],
+Cell[17614, 423, 689, 11, 71, "Text"]
+}
+]
+*)
+
+(* End of internal cache information *)

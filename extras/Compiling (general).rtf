@@ -1,0 +1,41 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf320
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww14700\viewh13480\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 libsndfile on Mac
+\b0 \
+\
+#sndfile-play doesn't work, so replace its contents with a blank program\
+echo "int main (int argc, char *argv []) \{return 0;\}" > programs/sndfile-play2.c\
+mv programs/sndfile-play2.c programs/sndfile-play.c\
+\
+#Not necessary unless compiler is changed\
+export CC=gcc-4.2\
+\
+#For 64-bit building\
+./configure --build=x86_64\
+make\
+make check\
+sudo make install\
+\
+\
+
+\b FFTW with threads on Mac\
+
+\b0 \
+./configure --build=x86_64 --enable-threads\
+make\
+make check\
+sudo make install\
+\
+
+\b FFTW 3.3.2 patch
+\b0 \
+\
+api/mapflags.c line 65:\
+\pard\pardeftab720\ql\qnatural
+
+\f1 \cf0 timelimit < 0 || timelimit >= tmax\
+}
