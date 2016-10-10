@@ -41,7 +41,7 @@ JUCEDefines = {"JUCE_ASIO=0", "JUCE_DIRECTSOUND=0", "JUCE_JACK=0",
   "JUCE_WEBBROWSER=0", "JUCE_CHECK_MEMORY_LEAKS=0"}
 
 JUCELinuxLinks = {"freetype", "pthread", "rt", "X11", "GL", "GLU", "Xinerama",
-                  "asound"}
+                  "asound", "dl", "Xext"}
                   
 ExtendedLinks = {"fftw3", "sndfile", "fftw3_threads", "m", "pthread"}
 
