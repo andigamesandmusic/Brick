@@ -1,0 +1,101 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green42\blue163;\red77\green77\blue77;\red0\green54\blue156;
+\red160\green26\blue21;\red0\green37\blue170;\red0\green45\blue158;\red0\green46\blue158;\red126\green33\blue26;
+}
+\deftab560
+\pard\pardeftab560\ql\qnatural
+
+\f0\fs18 \cf0 (\
+	s = Server.local;\
+	b = \cf2 Buffer\cf0 .read(s, \cf3 "/generated/piano/ImpulseTest3a.aiff"\cf0 );\
+	o = \cf4 s\cf0 .options;\
+	o.memSize = 4096 * 64;\
+)\
+\
+(\cf5 \
+\cf0 	x = \cf6 CSVFileReader\cf0 .readInterpret(\cf3 "/generated/brick/filters/N8061_200_300LP_dB192.filt"\cf0 ).postcs;\
+)\
+\
+(\
+	b.zero;\
+	for(0, x.size - 1, \{\cf6 arg\cf0  i; b.set(i, x[i][0])\});\
+)\
+\
+(\
+	\{\
+		\cf7 var\cf0  input = \cf8 SinOsc\cf0 .ar(\cf8 XLine\cf0 .kr(100, 2000, 1), 0, 1);\cf9 \
+		\cf7 Out\cf0 .ar(0, \cf7 Convolution2\cf0 .ar(input, b, 0, 8192));\
+	\}.play;\
+)\
+\
+(\
+	\{\
+		\cf7 var\cf0  input = \cf8 SinOsc\cf0 .ar(\cf8 XLine\cf0 .kr(1000, 4000, 4), 0, 1);\cf9 \
+		\cf7 Out\cf0 .ar(0, \cf7 Convolution2\cf0 .ar(input, b, 0, 8192*64));\
+	\}.play;\
+)\
+\
+(\
+	\{\
+		\cf7 var\cf0  input = \cf6 WhiteNoise\cf0 .ar(1);\cf9 \
+		\cf7 Out\cf0 .ar(0, \cf7 Convolution2\cf0 .ar(input, b, 0, 8192));\
+	\}.play;\
+)\
+\
+(\
+	\{\
+		\cf7 var\cf0  input = \cf6 AudioIn.ar\cf0 (1);\cf9 \
+		\cf7 Out\cf0 .ar(0, \cf7 Convolution2\cf0 .ar(input, b, 0, 8192*64));\
+	\}.play;\
+)\
+\
+\
+(\
+	SynthDef("additiveAndrew", \
+	\{\
+		arg vol = 0.5, minf = 100, maxf = 5000, overtones = #[1, 2, 0, 0, 0, 0];\cf9 \
+		\cf0 Out.ar(0,\
+		\
+		\
+           \cf6 BPF\cf0 .ar(\
+             \cf6 WhiteNoise.ar(1)\cf0 , (\cf6 MouseX\cf0 .kr(minf, maxf, 1) * overtones).cpsmidi.floor.midicps, \cf6 MouseY\cf0 .kr(0.0001, 1, 1)) *\
+               vol / \cf6 MouseY\cf0 .kr(0.001, 1, 1)\
+               \
+            );\
+		\}).play;\
+)\
+\
+(\
+	SynthDef("additiveAndrew", \
+	\{\
+		arg vol = 0.5, minf = 100, maxf = 5000, overtones = #[1, 2, 0, 0, 0, 0];\
+		var envShape = EnvGen.kr(Env.perc(attackTime: 0.05, releaseTime: 5, curve: -10), doneAction: 2);\cf9 \
+		\cf0 Out.ar(0,\
+		\
+		\
+           \cf6 BPF\cf0 .ar(\
+             \cf6 WhiteNoise.ar(1)\cf0 , (\cf6 Rand\cf0 (minf, maxf) * overtones).cpsmidi.floor.midicps, \cf6 MouseY\cf0 .kr(0.0001, 1, 1)) *\
+               vol / \cf6 MouseY\cf0 .kr(0.001, 1, 1) * envShape\
+               \
+            );\
+		\}).play;\
+)\
+\
+(\
+	r=Task(\{\
+			var gongs=\{\
+				var waitTime = (rrand(2, 5).floor) / 10,\
+				a = Synth.new(\\additiveAndrew, [\\vol, 0.5, \\minf, 400, \\maxf, 800, \\overtones, [1, 2, 3, 4, 0, 0]]);\
+				b = Synth.new(\\additiveAndrew, [\\vol, 0.5, \\minf, 400, \\maxf, 800, \\overtones, [1, 2, 3, 4, 0, 0]]);\
+				c = Synth.new(\\additiveAndrew, [\\vol, 0.5, \\minf, 400, \\maxf, 800, \\overtones, [1, 2, 3, 4, 0, 0]]);\
+				waitTime.wait;\
+			\};\
+		gongs.loop;\
+	\});\
+\
+)\
+r.start;\
+r.stop;\
+\
+}

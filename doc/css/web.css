@@ -1,0 +1,89 @@
+body,a,p,li,h1,h2,h3,h4,h5
+{
+  font-family: "Georgia";
+  font-weight: normal;
+  font-variant: normal;
+}
+
+body
+{
+  background-color: #F9F9F9;
+  color: black;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+
+h1,h2,h3,h4,h5
+{
+  font-style: bold;
+  margin-top: 1em;
+  margin-bottom: 0.3em;
+  color: #000064;
+}
+
+h1 {font-size: 24pt; letter-spacing: 3pt; font-variant: small-caps; text-align: center; margin-bottom: 3em;}
+h2 {font-size: 18pt; letter-spacing: 1pt;}
+h3 {font-size: 16pt;}
+h4 {font-size: 14pt;}
+h5 {font-size: 12pt;}
+
+p, a, li
+{
+  font-size: 12pt;
+  line-height: 1.5em;
+}
+
+p
+{
+  margin-top: 0em;
+  margin-bottom: 0em;
+}
+
+p + p
+{
+  text-indent: 1.5em;
+}
+
+p.code
+{
+  font-family: "Courier New";
+  font-size: 10pt;
+  outline: #000000 dashed 1px;
+  text-indent: 0.0em;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+p.hide
+{
+  display: none;
+}
+
+a:link, a:visited {color : #880000;} 
+a:hover {color : #8888FF;} 
+a:active {color : #BBBBFF;}
+
+ul {list-style-type : square;}
+
+li
+{
+  font: normal normal normal 12pt/14pt "Georgia";
+  line-height: 1.5em;
+  margin-top: 1em;
+}
+
+img
+{
+  align: center;
+  border: 1px solid #808080;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+table.main
+{
+  background-color: #FFFFFF;
+  border: 1px solid #000000;
+}

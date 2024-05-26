@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>Brick Test Suite : Oscillators</title>
+    <link rel="stylesheet" href="test/test.css" type="text/css"/>
+  </head>
+  <body data-title="Brick 1.2 Test Suite" data-author=""
+  data-date="" style="text-align:center">
+    <table style="margin-left:auto; margin-right:auto; border-spacing:50px"
+    data-flatten="yes" class="main">
+      <tr data-flatten="yes"><td data-flatten="yes" style="text-align:left; width: 800px">
+        
+        
+        <h1>Oscillators</h1>
+        
+        <p>Not all oscillators are made equal. Here we see that the built-in
+          trigonometric functions in the C++ standard library CMath build up harmonics
+          and noise when the values of the input grow to high.
+        </p>
+        
+        
+        <h2>Input Files</h2>
+        
+        <div class="code">_Sweep80s_Precise.aiff<br/>
+_Sweep80s_Machine.aiff<br/>
+_Sweep80s_CMath.aiff<br/>
+_Tone80s_Recursive.aiff</div>
+
+        <h2>Notes</h2>
+        
+        <p>The recurrence relation used for the tone in Figure 4 is of the form:</p>
+        
+        <div class="code">sin[n * f] = a[n] = 2 cos(f) a[n - 1] - a[n - 2]<br/>
+a[-1] = sin(-f)<br/>
+a[-2] = sin(-2f)<br/></div>
+        
+        <p>The formula is exceptionally stable over long iterations and
+          appears to neither drift in frequency nor accumulate noise. In this case, f is
+          the two-pi times divided by the Euler constant, 2 Pi / e. This frequency was picked since it is irrational and therefore will not exactly repeat.</p>
+
+
+        <img src="_Sweep80s_Precise_.png" data-incheswidth="5.5" data-align="figure" data-caption="80-second sweep implemented using arbitrary precision in Mathematica." data-inchesborder="0.01"/>
+        <div class="xcaption" style="text-align:center">80-second sweep implemented using arbitrary precision in Mathematica.</div>
+
+        <img src="_Sweep80s_Machine_.png" data-incheswidth="5.5" data-align="figure" data-caption="80-second sweep implemented using MachinePrecision in Mathematica." data-inchesborder="0.01"/>
+        <div class="xcaption" style="text-align:center">80-second sweep implemented using MachinePrecision in Mathematica.</div>
+        
+        <img src="_Sweep80s_CMath_.png" data-incheswidth="5.5" data-align="figure" data-caption="80-second sweep implemented using the sin() function from the cmath library." data-inchesborder="0.01"/>
+        <div class="xcaption" style="text-align:center">80-second sweep implemented using the sin() function from the cmath library.</div>
+
+        <img src="_Tone80s_Recursive_.png" data-incheswidth="5.5" data-align="figure" data-caption="80-second tone implemented using the sine recurrence relation." data-inchesborder="0.01"/>
+	<div class="xcaption" style="text-align:center">80-second tone implemented using the sine recurrence relation.</div>
+
+        
+
+
+       
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+

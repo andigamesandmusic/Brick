@@ -1,0 +1,57 @@
+body
+{
+  background-color: white;
+	color: black;
+}
+
+table.main
+{
+  background-color: white;
+  border: 0px hidden #000000;
+}
+
+a
+{
+  font: normal normal normal 12pt/14pt "Georgia"; 
+  text-decoration: none;
+}
+
+a:link
+{
+  color: black;
+  text-decoration: none;
+} 
+
+a:visited
+{
+  color: black; 
+  text-decoration: none;
+} 
+
+a:hover
+{
+  color: black; 
+  text-decoration: none;
+} 
+
+a:active
+{
+  color: black;
+  text-decoration: none;
+}
+
+div.noprint
+{
+  font: normal normal normal 12pt/14pt "Georgia";
+  display: none;
+}
+
+div.noscreen
+{  
+  display: block;
+}
+
+img
+{
+  width: 2in;
+}

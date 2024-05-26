@@ -1,0 +1,203 @@
+Usage: brick inputfile.aiff outputfile.wav [settings]
+       brick inputfile.aiff outputspectrogram.png [settings]
+
+  Brick can read and write multi-channel .aiff (or .aif), .wav, .au, .raw
+  
+  Brick can probably read: .caf, .flac, .htk, .iff, .mat4, .mat5, .paf, .pvf,
+                           .sd2, .sf, .svx, .voc, .w64, .xi
+                       
+  Brick can write spectrograms (instead of audio) to: .png, .jpg
+                       
+  Brick is a non-destructive resampler. It can not be used to resample a file
+  in place.
+  
+  The [settings] can be combinations of the following:
+  
+                                   *****
+
+  OUTPUT FORMAT
+  --samplerate=keep [keep 44100Hz 48000Hz nnnnnnHz] (integers only)
+  The sample rate of the output in whole Hertz. You must specify the units 'Hz'.
+  If there is no change to the sample rate, you can explictly write this with
+  'keep'.
+  
+  --sampleformat=keep [keep int16 int24 int32 float32 float64]
+  The bit format representing each sample. Using 'keep' will match the output
+  format to the input format.
+  
+                                   *****
+
+  RAW DATA
+  If the input file extension is .raw, then you must provide the following
+  information, with the exception that if the output is a spectrogram, then
+  --inputsamplerate is not applicable and does not need to be specified.
+  
+  In order to read a file as raw data, the extension must be .raw. Note that it
+  is assumed that samples are grouped into frames not channels; that is,
+  channels are not presented separately, but their samples are interleaved
+  (i.e., chan0samp0, chan1samp0, chan0samp1, chan1samp1, etc.)
+  
+  --inputchannels=[1 2 3 4 nn] (integers only)
+  The number of channels of raw data input. Channel samples are interleaved.
+  
+  --inputsampleformat=[int16 int24 int32 float32 float64]
+  The format of the raw data input. Integer data is interpreted as signed. The
+  endianness is determined by the system.
+  
+  --inputsamplerate=[44100Hz 48000Hz nnnnnnHz] (integers only)
+  The sample rate of the raw data input.
+  
+                                   *****
+
+  RESAMPLE QUALITY
+  --allowablebandwidthloss=0.1%
+  The maximum percentage of bandwidth loss near the Nyquist frequency of the
+  output sample rate. You must specify this number as a percentage. This
+  reflects the width of the low-pass filter transition region between the pass
+  and stop bands. It does not account for frequency content in the input above
+  the output Nyquist frequency that is inherently rejected due to the resampling
+  process. The default value is 0.1%.
+  
+  --depth=200dB [nnn.ndB]
+  The depth of attenuation in decibels in the resampling filter's stopband. The
+  maximum value of depth is 300dB (a conservative limit to the dynamic range of
+  the 64-bit floating point operations that are computing the filter.) Note the
+  dynamic range of the integer bit-rates are: 16-bit=96.3dB, 24-bit=144.5dB, and
+  32-bit=192.7dB.
+  
+  --nofilter
+  Disables the resampling filter thereby doing a simple rate change with no
+  sample-wise conversion. The output file will simply have a different sample
+  rate. This option is also used internally when the overall sample rate ratio
+  stays the same (i.e., 44.1kHz to 88.2kHz with a +1 pitch-shift).
+  
+                                   *****
+
+  PITCH SHIFT
+  --pitchshift=[3/2 +1m3.35 |+-|n|dmPMA|n.nn|]
+  A ratio or octave and interval by which to pitch shift (by resampling) the
+  audio file. Valid intervals are P1, m2, M2, m3, M3, P4, A4, D5, TT, P5, m6,
+  M6, m7, M7. For example up an octave: +1. Down a minor third: -m3.
+  
+  In the case that an interval is specified, the irrational ratio is
+  rationalized to within an error of +/- the value of --centstolerance. The
+  ratio of the pitch shift is cascaded with the ratio of the sample ratio
+  conversion.
+
+  --centstolerance=0.1 (0.0 to 100.0)
+  The minimum number of cents (+/-) that an interval-based (irrational) pitch
+  shift will be accurate to.
+  
+                                   *****
+
+  DITHERING
+  --dither=triangle [triangle, rectangle, off]
+  Sets the type of dithering to be used when downconverting integer formats, or
+  when one of the resample, low-pass, or high-pass filters are applied.
+  Dithering is never used unless necessary (i.e., unless the signal has been
+  modified by a filter)
+  
+  --ditherbits=1.0 (0.0 - 1.0)
+  Sets the amount of bits (0.0 up to 1.0) to dither. As dither increases the
+  white noise bed gets louder and the correlated quantization noise gets softer.
+  Usually, the default value of 1.0 is the best.
+  
+                                   *****
+
+  SPECTROGRAM (mono and stereo only)
+  A spectrogram is made when the output file is of type '.png' (PNG) or
+  '.jpg' (JPEG). For JPEG the highest quality compression will be used. The
+  following parameters control the spectrogram:
+  
+  --spectrogramsize=4096 (128 to 65536, integers only)
+  The window size of the FFT. This does not have to be a power-of-two, but will
+  be faster if it is. The height of the image is this value divided by 2 plus 1.
+  Increasing this value will increase the resolution of the spectrogram, but
+  does not generally affect the dynamic range. See spectrogram beta for changing
+  the dynamic range of the analysis.
+  
+  --spectrogramstep=1000 (1 to spectrogram size, integers only)
+  The sample step size corresponding to the time-domain width of a single column
+  in the image. The width of the image will be approximately the total number of
+  sample frames divided by the step size.
+  
+  --spectrogrambeta=35.0 (5.0 to 40.0)
+  The beta value of the Kaiser window. Higher beta values increase the sidelobe
+  attenuation (dynamic range), but decrease the main-lobe width (resolution) if
+  the spectrogram size is held constant.
+  
+  --gradient=gray [gray/grey color/colour]
+  The type of color gradient used for the spectrogram. The gray gradient has the
+  property that the value of the 8-bit pixel is the dB value at the given
+  frequency. Thus black is 0dB and white is -255 dB.
+  
+  If the input is stereo, then the gradient will automatically be red=left
+  channel, blue=right channel, green=difference between channels. Thus you will
+  see yellow as purely left, purple as similar frequency energy in both the
+  channels, and green-blue as purely right.
+  
+  --gradientrange=default [default, 6dB to 300dB]
+  The dynamic range of the gradient. If default is specified then the dynamic
+  range will be 255dB for gray, 180dB for color, and ~128dB for stereo.
+  
+  
+                                   *****
+
+  CONVOLUTION (mono only)
+  --convolve=[impulseresponse.aiff/au/wav]
+  Performs convolution using the given impulse-response. Since the convolution
+  is calculated using the same algorithm used for sample-rate conversion, it
+  will be very efficient.
+  
+  
+                                   *****
+
+  WISDOM
+  Wisdom is an accumulation of machine-dependent optimizations that take place
+  during the plan-phase of the FFTs used in Brick (via FFTW). Wisdom is stored
+  in an application support text file and takes up very little space. The
+  purpose of wisdom is hint the application as to which FFT algorithms might
+  run the fastest on that particular machine. In order to make use of wisdom,
+  you should run Brick with the parameter --acquirewisdom (by itself) to
+  generate wisdom for your machine. (See below).
+  
+  --acquirewisdom
+  Precalculate wisdom for all possible FFTs that can fit into physical memory.
+  This parameter may not be used with any other parameters. There are three
+  stages with time-limits on how long to spend optimizing each FFT size (up to
+  about 26 possible): ten-seconds, one-minute, two-minutes.
+  
+  This may take several minutes, but it is a one-time cost hat can subsequently
+  increase the speed at which Brick does conversions, around 10%-20% depending
+  on the FFT.
+  
+  If you stop acquiring wisdom (Control + C to exit), then you will have
+  accumulated all the wisdom up to that point. If you then begin acquiring
+  wisdom again, the system will pick up where you left off.
+  
+  --forgetwisdom
+  Deletes the cache of wisdom on your system. You should do this when you
+  upgrade to a new version of Brick and re-run --acquirewisdom.
+  
+  --donotloadwisdom
+  Forces the program to not load wisdom during this run.
+  
+  
+                                   *****
+
+  FILTER ANALYSIS (requires Mathematica for graphs)
+  --exportfilter=filtername.fft
+  Exports a high-resolution FFT of the filter being applied during the
+  block-convolution algorithm of a sample-rate conversion. The console will
+  then display code that can be copy-pasted into a Mathematica document to
+  create graphs showing the active region, transition region, passband ripple,
+  and group (phase) deviation.
+  
+    
+                                   *****
+
+  HELP
+  --help
+  Lists and describes the correct parameter usage to Brick. If Brick is run with
+  no parameters, then the help will be shown.
+
